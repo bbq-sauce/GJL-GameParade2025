@@ -4,38 +4,42 @@ using System.Collections;
 
 public class TaskSlot : MonoBehaviour, IDropHandler
 {
-   // [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] CanvasGroup canvasGroup;
     private DragAndDrop assignedCharacter;
     private Coroutine taskCoroutine;
     private bool taskStarted = false;
     private bool isActive =true;
     public bool IsRunning => taskCoroutine != null;
 
-    //public void SetActiveState(bool active)
-    //{
-    //    isActive = active;
+    public void SetActiveState(bool active)
+    {
+        isActive = active;
 
-    //    if (canvasGroup != null)
-    //    {
-    //        canvasGroup.alpha = active ? 1f : 0.4f; // greyed out if inactive
-    //        canvasGroup.blocksRaycasts = active; // so you can't drop onto it
-    //    }
-    //}
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = active ? 1f : 0.4f;           // make it look faded when inactive
+            canvasGroup.blocksRaycasts = active;              // only interactable if active
+        }
+    }
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (taskStarted || assignedCharacter != null)
+        if (!isActive || taskStarted || assignedCharacter != null)
             return;
 
         if (eventData.pointerDrag != null)
         {
             assignedCharacter = eventData.pointerDrag.GetComponent<DragAndDrop>();
-            assignedCharacter.transform.SetParent(transform); // Optional
+            assignedCharacter.transform.SetParent(transform);
             assignedCharacter.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
             StartTask(assignedCharacter.characterData);
+
+            // Optional: tell GameController what task was assigned
+            GameController.Instance.SetTaskAssignment(assignedCharacter.characterData.characterName, gameObject.name);
         }
     }
+
 
     public void StartTask(CharacterData data)
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 public class GameController : MonoBehaviour
 {
 
@@ -27,8 +28,33 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         timer = levelDuration;
+        ActivateRandomTasks();
+
         StartCoroutine(LevelTimer());
         UpdateUI();
+    }
+
+    private void ActivateRandomTasks()
+    {
+        // Make sure all are deactivated first
+        foreach (var slot in slots)
+        {
+            slot.SetActiveState(false);
+        }
+
+        // Shuffle slots
+        List<TaskSlot> shuffled = new List<TaskSlot>(slots);
+        for (int i = 0; i < shuffled.Count; i++)
+        {
+            int randIndex = Random.Range(i, shuffled.Count);
+            (shuffled[i], shuffled[randIndex]) = (shuffled[randIndex], shuffled[i]);
+        }
+
+        // Activate the first 9
+        for (int i = 0; i < 9; i++)
+        {
+            shuffled[i].SetActiveState(true);
+        }
     }
 
     private IEnumerator LevelTimer()
