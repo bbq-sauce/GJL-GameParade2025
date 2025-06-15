@@ -3,19 +3,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+
 public class GameController : MonoBehaviour
 {
-
     public static GameController Instance;
 
-    public float levelDuration = 150f; // 2.5 minutes
+    public float levelDuration = 150f;
     private float timer;
-    private int score = 0;
+    private int currentScore = 0;
+    private int totalScore = 0;
+    private int dayCount = 0; // Tracks how many times restarted (max 7)
 
+    [Header("UI References")]
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI timerText;
     public GameObject endScreen;
+    public TextMeshProUGUI endScreenText;
+    public Button nextDayButton;
 
+    [Header("Character References")]
+    public DragAndDrop warlock;
+    public DragAndDrop cleric;
+    public Transform warlockStartPos;
+    public Transform clericStartPos;
+
+    [Header("Task Slots")]
     [SerializeField] private TaskSlot[] slots;
     [SerializeField] private TextMeshProUGUI warlockTaskText;
     [SerializeField] private TextMeshProUGUI clericTaskText;
@@ -23,17 +35,34 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
+
+        nextDayButton.onClick.AddListener(RestartLevel);
     }
 
     private void Start()
     {
-        timer = levelDuration;
         ActivateRandomTasks();
-
-        StartCoroutine(LevelTimer());
-        UpdateUI();
+        StartLevel();
     }
 
+    private void StartLevel()
+    {
+        ActivateRandomTasks();
+
+        timer = levelDuration;
+        currentScore = 0;
+        dayCount++;
+
+        warlockTaskText.text = "Warlock: ";
+        clericTaskText.text = "Cleric: ";
+
+        ResetCharacters();
+        ResetTaskSlots();
+        UpdateUI();
+
+        endScreen.SetActive(false);
+        StartCoroutine(LevelTimer());
+    }
     private void ActivateRandomTasks()
     {
         // Make sure all are deactivated first
@@ -72,12 +101,12 @@ public class GameController : MonoBehaviour
     private void UpdateUI()
     {
         timerText.text = $"Time: {Mathf.CeilToInt(timer)}s";
-        scoreText.text = $"Score: {score}";
+        scoreText.text = $"Score: {currentScore}";
     }
 
     public void AddScore(int value)
     {
-        score += value;
+        currentScore += value;
         UpdateUI();
     }
 
@@ -88,16 +117,48 @@ public class GameController : MonoBehaviour
             slot.PenalizeUnassigned();
         }
 
+        totalScore += currentScore;
+
+        endScreenText.text = dayCount >= 7
+            ? $"Final Week Score: {totalScore}\n{(totalScore >= 50 ? "Great job!" : "Try again!")}"
+            : $"Day {dayCount} Score: {currentScore}";
+
+
+        nextDayButton.gameObject.SetActive(dayCount < 7); // Only show button if more days left
         endScreen.SetActive(true);
-        endScreen.GetComponentInChildren<Text>().text = "Final Score: " + score;
     }
+
+    private void RestartLevel()
+    {
+        StartLevel();
+    }
+
+    private void ResetCharacters()
+    {
+        warlock.transform.SetParent(warlockStartPos.parent);
+        warlock.GetComponent<RectTransform>().anchoredPosition = warlockStartPos.GetComponent<RectTransform>().anchoredPosition;
+        warlock.ShowProgressBar(false);
+        warlock.LockDragging(false);
+
+        cleric.transform.SetParent(clericStartPos.parent);
+        cleric.GetComponent<RectTransform>().anchoredPosition = clericStartPos.GetComponent<RectTransform>().anchoredPosition;
+        cleric.ShowProgressBar(false);
+        cleric.LockDragging(false);
+    }
+
+    private void ResetTaskSlots()
+    {
+        foreach (var slot in slots)
+        {
+            slot.ResetSlot();
+        }
+    }
+
     public void SetTaskAssignment(string characterName, string taskName)
     {
-        Debug.Log(characterName + " " + taskName);
         if (characterName == "Warlock")
             warlockTaskText.text = $"Warlock: {taskName}";
         else if (characterName == "Cleric")
             clericTaskText.text = $"Cleric: {taskName}";
     }
-
 }

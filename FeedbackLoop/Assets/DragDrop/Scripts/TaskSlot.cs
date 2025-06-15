@@ -82,9 +82,27 @@ public class TaskSlot : MonoBehaviour, IDropHandler
 
     public void PenalizeUnassigned()
     {
-        if (!taskStarted && assignedCharacter == null)
+        if (isActive && !taskStarted && assignedCharacter == null)
         {
-            GameController.Instance.AddScore(-30); // Penalty
+            GameController.Instance.AddScore(-30);
         }
     }
+    public void ResetSlot()
+    {
+        if (assignedCharacter != null)
+        {
+            assignedCharacter.ShowProgressBar(false);
+            assignedCharacter.LockDragging(false);
+        }
+
+        assignedCharacter = null;
+        taskStarted = false;
+
+        if (taskCoroutine != null)
+        {
+            StopCoroutine(taskCoroutine);
+            taskCoroutine = null;
+        }
+    }
+
 }
