@@ -13,10 +13,11 @@ public class GameController : MonoBehaviour
     private int currentScore = 0;
     private int totalScore = 0;
     private int dayCount = 0; // Tracks how many times restarted (max 7)
+    [SerializeField] private RectTransform rotatingImage;
+
 
     [Header("UI References")]
     public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI timerText;
     public GameObject endScreen;
     public TextMeshProUGUI endScreenText;
     public Button nextDayButton;
@@ -88,19 +89,27 @@ public class GameController : MonoBehaviour
 
     private IEnumerator LevelTimer()
     {
+        float elapsed = 0f;
+
         while (timer > 0)
         {
             timer -= Time.deltaTime;
-            UpdateUI();
+            elapsed += Time.deltaTime;
+
+            float progress = Mathf.Clamp01(elapsed / levelDuration);
+            float rotationZ = 360f * progress;
+            rotatingImage.localEulerAngles = new Vector3(0, 0, rotationZ); // clockwise
+
             yield return null;
         }
 
+        rotatingImage.localEulerAngles = Vector3.zero; // Reset to original (optional)
         EndLevel();
     }
 
+
     private void UpdateUI()
     {
-        timerText.text = $"Time: {Mathf.CeilToInt(timer)}s";
         scoreText.text = $"Score: {currentScore}";
     }
 
