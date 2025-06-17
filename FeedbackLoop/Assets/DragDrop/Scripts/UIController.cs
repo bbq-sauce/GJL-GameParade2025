@@ -23,6 +23,9 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button hmbMenucontinueButton;
     [SerializeField] private Button hmbMenuOptionsButton;
     [SerializeField] private Button hmbMenuMainMenuButton;
+    [SerializeField] private Button optionsBackButton;
+    [SerializeField] private Button pauseYesButton;
+    [SerializeField] private Button pauseNoButton;
 
     [Header("Options")]
     [SerializeField] private Slider audioSlider;
@@ -64,11 +67,20 @@ public class UIController : MonoBehaviour
         resumeGameButton.onClick.AddListener(ResumeGame);
         quitButton.onClick.AddListener(QuitGame);
         optionsButton.onClick.AddListener(() => optionsPanel.SetActive(true));
+        optionsBackButton.onClick.AddListener(()=> { 
+            optionsPanel.SetActive(false);
+        });
 
         pauseButton.onClick.AddListener(ShowPauseMenu);
         hmbMenucontinueButton.onClick.AddListener(HidePauseMenu);
-        hmbMenuOptionsButton.onClick.AddListener(() => optionsPanel.SetActive(true));
+        hmbMenuOptionsButton.onClick.AddListener(() => {
+            optionsPanel.SetActive(true);
+            pauseMenuPanel.SetActive(false);
+        }); 
         hmbMenuMainMenuButton.onClick.AddListener(() => confirmExitPanel.SetActive(true));
+
+        pauseNoButton.onClick.AddListener(()=>confirmExitPanel.SetActive(false));
+        pauseYesButton.onClick.AddListener(ShowMainMenu);
     }
 
     void ShowMainMenu()
