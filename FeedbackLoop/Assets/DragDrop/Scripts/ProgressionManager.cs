@@ -9,6 +9,7 @@ public class ProgressionManager : MonoBehaviour
 
     public CharacterRuntimeStats WarlockStats { get; private set; }
     public CharacterRuntimeStats ClericStats { get; private set; }
+    public enum KingReactionType { None, Angry, Happy }
 
     private void Awake()
     {
@@ -22,6 +23,11 @@ public class ProgressionManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public bool ShouldRestartWeek(int totalScore)
+    {
+        return totalScore < 50;
     }
 
     public void RecordTaskSuccess(string character)
