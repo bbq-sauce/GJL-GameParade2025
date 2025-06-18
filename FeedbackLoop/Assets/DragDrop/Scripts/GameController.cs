@@ -43,10 +43,10 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         ActivateRandomTasks();
-        StartLevel();
+        Time.timeScale = 0f;
     }
 
-    private void StartLevel()
+    public void StartLevel()
     {
         ActivateRandomTasks();
 
@@ -134,6 +134,7 @@ public class GameController : MonoBehaviour
 
 
         nextDayButton.gameObject.SetActive(dayCount < 7); // Only show button if more days left
+        UIController.Instance.AdvanceDay(dayCount+1);
         endScreen.SetActive(true);
     }
 

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController Instance { get; private set; }
     [Header("Panels")]
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject optionsPanel;
@@ -38,11 +39,14 @@ public class UIController : MonoBehaviour
     private int currentWeek = 1;
     private int currentDay = 1;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         LoadProgress();
         SetupButtons();
-        UpdateGameInfoText();
 
         if (PlayerPrefs.HasKey("CurrentDay"))
         {
@@ -75,7 +79,6 @@ public class UIController : MonoBehaviour
         hmbMenucontinueButton.onClick.AddListener(HidePauseMenu);
         hmbMenuOptionsButton.onClick.AddListener(() => {
             optionsPanel.SetActive(true);
-            pauseMenuPanel.SetActive(false);
         }); 
         hmbMenuMainMenuButton.onClick.AddListener(() => confirmExitPanel.SetActive(true));
 
@@ -96,17 +99,21 @@ public class UIController : MonoBehaviour
     {
         currentWeek = 1;
         currentDay = 1;
+        UpdateGameInfoText();
         SaveProgress();
         mainMenuPanel.SetActive(false);
         gamePanel.SetActive(true);
         Time.timeScale = 1f;
+        GameController.Instance.StartLevel();
     }
 
     void ResumeGame()
     {
+        UpdateGameInfoText();
         mainMenuPanel.SetActive(false);
         gamePanel.SetActive(true);
         Time.timeScale = 1f;
+        GameController.Instance.StartLevel();
     }
 
     void QuitGame()
@@ -166,9 +173,9 @@ public class UIController : MonoBehaviour
         currentWeek = PlayerPrefs.GetInt("CurrentWeek", 1);
     }
 
-    public void AdvanceDay()
+    public void AdvanceDay(int dayCount)
     {
-        currentDay++;
+        currentDay=dayCount;
         if (currentDay > 7)
         {
             currentDay = 1;
