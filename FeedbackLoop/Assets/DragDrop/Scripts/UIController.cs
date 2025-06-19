@@ -36,6 +36,10 @@ public class UIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI weekText;
     [SerializeField] private TextMeshProUGUI dayText;
 
+    [SerializeField] private KingFeedbackUI kingFeedbackUI;
+
+
+
     private int currentWeek = 1;
     private int currentDay = 1;
 
@@ -176,7 +180,7 @@ public class UIController : MonoBehaviour
     public void AdvanceDay(int dayCount)
     {
         currentDay=dayCount;
-        if (currentDay > 7)
+        if (currentDay > 5)
         {
             currentDay = 1;
             currentWeek++;
@@ -184,4 +188,10 @@ public class UIController : MonoBehaviour
         SaveProgress();
         UpdateGameInfoText();
     }
+
+    public void ShowKingFeedbackPanel(ProgressionManager.KingReactionType reaction, bool isEndOfWeek, int totalScore)
+    {
+        kingFeedbackUI.ShowFeedback(reaction, isEndOfWeek, totalScore);
+    }
+
 }

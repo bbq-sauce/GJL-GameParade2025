@@ -2,27 +2,23 @@ using UnityEngine;
 
 public class ProgressionManager : MonoBehaviour
 {
-    public static ProgressionManager Instance { get; private set; }
+    public static ProgressionManager Instance;
 
-    public CharacterData warlockData;
-    public CharacterData clericData;
-
-    public CharacterRuntimeStats WarlockStats { get; private set; }
-    public CharacterRuntimeStats ClericStats { get; private set; }
-    public enum KingReactionType { None, Angry, Happy }
+    public CharacterRuntimeStats warlockStats;
+    public CharacterRuntimeStats clericStats;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            WarlockStats = new CharacterRuntimeStats { baseData = warlockData };
-            ClericStats = new CharacterRuntimeStats { baseData = clericData };
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+    }
+
+    public enum KingReactionType { None, Angry, Happy }
+
+    public KingReactionType GetKingReaction(int warlockFails)
+    {
+        if (warlockFails >= 2) return KingReactionType.Angry;
+        if (warlockFails == 0) return KingReactionType.Happy;
+        return KingReactionType.None;
     }
 
     public bool ShouldRestartWeek(int totalScore)
@@ -30,24 +26,10 @@ public class ProgressionManager : MonoBehaviour
         return totalScore < 50;
     }
 
-    public void RecordTaskSuccess(string character)
+    public void ApplyWeeklyProgression()
     {
-        GetStats(character).RecordSuccess();
-    }
-
-    public void RecordTaskFailure(string character)
-    {
-        GetStats(character).RecordFailure();
-    }
-
-    public void ApplyWeeklyBonuses()
-    {
-        WarlockStats.ApplyWeeklyModifiers();
-        ClericStats.ApplyWeeklyModifiers();
-    }
-
-    private CharacterRuntimeStats GetStats(string character)
-    {
-        return character == "Warlock" ? WarlockStats : ClericStats;
+        Debug.Log("Weekly Progrssion Applied");
+        warlockStats.ApplyWeeklyModifiers();
+        clericStats.ApplyWeeklyModifiers();
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cleric
   m_EditorClassIdentifier: 
   characterName: Cleric
-  timeToDoTask: 10
-  successRate: 70
+  timeToDoTask: 40
+  successRate: 75
   pointsPerSuccess: 10
   pointsPerFailure: -5

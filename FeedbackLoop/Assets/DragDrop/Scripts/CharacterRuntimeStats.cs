@@ -1,3 +1,6 @@
+﻿using System.Runtime.InteropServices.WindowsRuntime;
+using UnityEngine;
+
 [System.Serializable]
 public class CharacterRuntimeStats
 {
@@ -31,6 +34,9 @@ public class CharacterRuntimeStats
         else if (baseData.characterName == "Cleric")
             BonusTime += TasksFailed / 2f;
 
+        baseData.successRate += Luck;
+        baseData.timeToDoTask += BonusTime;
+        PrintCharacterStats();
         ResetWeekData();
     }
 
@@ -39,4 +45,26 @@ public class CharacterRuntimeStats
         TasksDone = 0;
         TasksFailed = 0;
     }
+
+    public void PrintCharacterStats()
+    {
+        string characterLog = $"[{baseData.characterName} Stats]\n" +
+                            $"→ Luck: {Luck}\n" +
+                            $"→ Bonus Time: {BonusTime}\n" +
+                            $"→ Tasks Done: {TasksDone}\n" +
+                            $"→ Tasks Failed: {TasksFailed}\n" +
+                            $"→ Current Success Rate: {CurrentSuccessRate}\n" +
+                            $"→ Current Time To Do Task: {CurrentTimeToDoTask}";
+
+        
+
+        Debug.Log(characterLog);
+    }
+
+    private int GetSuccesses()
+    {
+        return TasksDone;
+    }
+
+    private int GetFailures() { return TasksFailed; }
 }

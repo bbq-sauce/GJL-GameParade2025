@@ -12,7 +12,13 @@ public class GameController : MonoBehaviour
     private float timer;
     private int currentScore = 0;
     private int totalScore = 0;
-    private int dayCount = 0; // Tracks how many times restarted (max 7)
+    private int dayCount = 0; 
+
+    private int warlockFails = 0;
+    private int clericFails = 0;
+    private int warlockSuccesses = 0;
+    private int clericSuccesses = 0;
+
     [SerializeField] private RectTransform rotatingImage;
 
 
@@ -37,7 +43,7 @@ public class GameController : MonoBehaviour
     {
         if (Instance == null) Instance = this;
 
-        nextDayButton.onClick.AddListener(RestartLevel);
+        nextDayButton.onClick.AddListener(ShowKingReaction);
     }
 
     private void Start()
@@ -46,8 +52,17 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+    private void ResetFailsAndSuccesses()
+    {
+        warlockFails = 0;
+        clericFails = 0;
+        warlockSuccesses = 0;
+        clericSuccesses = 0;
+    }
+
     public void StartLevel()
     {
+        ResetFailsAndSuccesses();
         ActivateRandomTasks();
 
         timer = levelDuration;
@@ -63,6 +78,7 @@ public class GameController : MonoBehaviour
 
         endScreen.SetActive(false);
         StartCoroutine(LevelTimer());
+        PrintCharacterStats();  
     }
     private void ActivateRandomTasks()
     {
@@ -110,7 +126,7 @@ public class GameController : MonoBehaviour
 
     private void UpdateUI()
     {
-        scoreText.text = $"Score: {currentScore}";
+        scoreText.text = $"Coins: {currentScore}";
     }
 
     public void AddScore(int value)
@@ -128,14 +144,16 @@ public class GameController : MonoBehaviour
 
         totalScore += currentScore;
 
-        endScreenText.text = dayCount >= 7
+        endScreenText.text = dayCount >= 5
             ? $"Final Week Score: {totalScore}\n{(totalScore >= 50 ? "Great job!" : "Try again!")}"
             : $"Day {dayCount} Score: {currentScore}";
 
-
-        nextDayButton.gameObject.SetActive(dayCount < 7); // Only show button if more days left
-        UIController.Instance.AdvanceDay(dayCount+1);
+        UIController.Instance.AdvanceDay(dayCount + 1);
         endScreen.SetActive(true);
+        nextDayButton.gameObject.SetActive(true);
+
+        if (dayCount == 5)
+            ProgressionManager.Instance.ApplyWeeklyProgression();
     }
 
     private void RestartLevel()
@@ -143,6 +161,12 @@ public class GameController : MonoBehaviour
         StartLevel();
     }
 
+    private void ShowKingReaction()
+    {
+        var kingReaction = ProgressionManager.Instance.GetKingReaction(ProgressionManager.Instance.warlockStats.TasksFailed);
+
+        UIController.Instance.ShowKingFeedbackPanel(kingReaction, dayCount >= 5, totalScore);
+    }
     private void ResetCharacters()
     {
         warlock.transform.SetParent(warlockStartPos.parent);
@@ -171,4 +195,11 @@ public class GameController : MonoBehaviour
         else if (characterName == "Cleric")
             clericTaskText.text = $"Cleric: {taskName}";
     }
+
+    private void PrintCharacterStats()
+    {
+        Debug.Log($"[Warlock Stats] Success Rate: {ProgressionManager.Instance.warlockStats.CurrentSuccessRate} | Task Time: {ProgressionManager.Instance.warlockStats.CurrentTimeToDoTask}");
+        Debug.Log($"[Cleric Stats] Success Rate: {ProgressionManager.Instance.clericStats.CurrentSuccessRate} | Task Time: {ProgressionManager.Instance.clericStats.CurrentTimeToDoTask}");
+    }
+
 }

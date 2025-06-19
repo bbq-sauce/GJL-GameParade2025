@@ -74,6 +74,22 @@ public class TaskSlot : MonoBehaviour, IDropHandler
         int points = success ? data.pointsPerSuccess : data.pointsPerFailure;
         GameController.Instance.AddScore(points);
 
+        if (data.characterName == "Warlock")
+        {
+            if (success)
+                ProgressionManager.Instance.warlockStats.RecordSuccess();
+            else
+                ProgressionManager.Instance.warlockStats.RecordFailure();
+        }
+        else if (data.characterName == "Cleric")
+        {
+            if (success)
+                ProgressionManager.Instance.clericStats.RecordSuccess();
+            else
+                ProgressionManager.Instance.clericStats.RecordFailure();
+        }
+
+
         assignedCharacter.LockDragging(false);
         taskCoroutine = null;
         taskStarted = false;
