@@ -12,6 +12,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameObject gamePanel;
     [SerializeField] private GameObject pauseMenuPanel;
     [SerializeField] private GameObject confirmExitPanel;
+    [SerializeField] private GameObject cinematicsPanel;
 
     [Header("Buttons")]
     [SerializeField] private Button newGameButton;
@@ -71,8 +72,8 @@ public class UIController : MonoBehaviour
 
     void SetupButtons()
     {
-        playButton.onClick.AddListener(StartNewGame);
-        newGameButton.onClick.AddListener(StartNewGame);
+        playButton.onClick.AddListener(StartCinematicComplete);
+        newGameButton.onClick.AddListener(StartCinematicComplete);
         resumeGameButton.onClick.AddListener(ResumeGame);
         quitButton.onClick.AddListener(QuitGame);
         optionsButton.onClick.AddListener(() => optionsPanel.SetActive(true));
@@ -98,6 +99,11 @@ public class UIController : MonoBehaviour
         optionsPanel.SetActive(false);
         pauseMenuPanel.SetActive(false);
         confirmExitPanel.SetActive(false);
+    }
+    void StartCinematicComplete()
+    {
+        cinematicsPanel.SetActive(true);
+        StartNewGame();
     }
 
     void StartNewGame()
