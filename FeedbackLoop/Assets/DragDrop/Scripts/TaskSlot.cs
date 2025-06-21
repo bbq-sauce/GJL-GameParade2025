@@ -76,6 +76,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
 
         if (data.characterName == "Warlock")
         {
+            ProgressionManager.Instance.warlockStats.RecordTaskCount();
             if (success)
                 ProgressionManager.Instance.warlockStats.RecordSuccess();
             else
@@ -83,6 +84,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
         }
         else if (data.characterName == "Cleric")
         {
+            ProgressionManager.Instance.clericStats.RecordTaskCount();
             if (success)
                 ProgressionManager.Instance.clericStats.RecordSuccess();
             else

@@ -38,6 +38,7 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private KingFeedbackUI kingFeedbackUI;
 
+    public int GetCurrentWeek() => currentWeek;
 
 
     private int currentWeek = 1;

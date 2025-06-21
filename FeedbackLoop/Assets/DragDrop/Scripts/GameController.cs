@@ -8,8 +8,9 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
 
+    [SerializeField] private float baseLevelDuration = 150f;
     public float levelDuration = 150f;
-    private float timer;
+    public float timer;
     private int currentScore = 0;
     private int totalScore = 0;
     private int dayCount = 0; 
@@ -19,6 +20,7 @@ public class GameController : MonoBehaviour
     private int warlockSuccesses = 0;
     private int clericSuccesses = 0;
 
+
     [SerializeField] private RectTransform rotatingImage;
 
 
@@ -27,6 +29,7 @@ public class GameController : MonoBehaviour
     public GameObject endScreen;
     public TextMeshProUGUI endScreenText;
     public Button nextDayButton;
+
 
     [Header("Character References")]
     public DragAndDrop warlock;
@@ -65,7 +68,11 @@ public class GameController : MonoBehaviour
         ResetFailsAndSuccesses();
         ActivateRandomTasks();
 
+        int currentWeek = UIController.Instance.GetCurrentWeek(); // Add this accessor
+        levelDuration = baseLevelDuration + (30f * (currentWeek - 1));
+
         timer = levelDuration;
+        
         currentScore = 0;
         dayCount++;
 
@@ -161,16 +168,16 @@ public class GameController : MonoBehaviour
             
     }
 
-    private void RestartLevel()
-    {
-        StartLevel();
-    }
 
     private void ShowKingReaction()
     {
-        var kingReaction = ProgressionManager.Instance.GetKingReaction(ProgressionManager.Instance.warlockStats.TasksFailed);
+        Debug.Log("TasksFailed: " + ProgressionManager.Instance.warlockStats.TasksFailed);
+        Debug.Log("TasksCount: " + ProgressionManager.Instance.warlockStats.DailyTasksCount);
+
+        var kingReaction = ProgressionManager.Instance.GetKingReaction(ProgressionManager.Instance.warlockStats.DayTaskFailed,ProgressionManager.Instance.warlockStats.DailyTasksCount);
 
         UIController.Instance.ShowKingFeedbackPanel(kingReaction, dayCount >= 5, totalScore);
+        ProgressionManager.Instance.warlockStats.ResetDayData();
     }
     private void ResetCharacters()
     {

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class CharacterRuntimeStats
@@ -11,6 +12,8 @@ public class CharacterRuntimeStats
 
     public int TasksDone = 0;
     public int TasksFailed = 0;
+    public int DailyTasksCount = 0;
+    public int DayTaskFailed = 0;
 
     public float CurrentTimeToDoTask => baseData.currTimeToDoTask + BonusTime;
     public float CurrentSuccessRate => baseData.currSuccessRate + Luck;
@@ -23,6 +26,13 @@ public class CharacterRuntimeStats
     public void RecordFailure()
     {
         TasksFailed++;
+        DayTaskFailed++;
+    }
+
+
+    public void RecordTaskCount()
+    {
+        DailyTasksCount++;
     }
 
     public void ApplyWeeklyModifiers()
@@ -40,6 +50,11 @@ public class CharacterRuntimeStats
         ResetWeekData();
     }
 
+    public void ResetDayData()
+    {
+        DayTaskFailed = 0;
+        DailyTasksCount = 0;
+    }
     public void ResetWeekData()
     {
         Luck = 0f;

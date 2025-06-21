@@ -14,10 +14,10 @@ public class ProgressionManager : MonoBehaviour
 
     public enum KingReactionType { None, Angry, Happy }
 
-    public KingReactionType GetKingReaction(int warlockFails)
+    public KingReactionType GetKingReaction(int warlockFails,int warlockTaskCount)
     {
         if (warlockFails >= 2) return KingReactionType.Angry;
-        if (warlockFails == 0) return KingReactionType.Happy;
+        if (warlockFails == 0 && warlockTaskCount>1) return KingReactionType.Happy;
         return KingReactionType.None;
     }
 
@@ -37,5 +37,11 @@ public class ProgressionManager : MonoBehaviour
     {
         warlockStats.ResetWeeklyProgressionOnNewGame();
         clericStats.ResetWeeklyProgressionOnNewGame();
+    }
+
+    public void ResetDayTasks()
+    {
+        warlockStats.ResetDayData();
+        clericStats.ResetDayData();
     }
 }
