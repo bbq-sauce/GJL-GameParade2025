@@ -1,14 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
     [Header("Audio Sources")]
-    [SerializeField] private AudioSource bgmSource;
-    [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioSource ambienceSource;
+    [SerializeField] private AudioSource audioSource;
 
     [Header("Audio Clips")]
     [SerializeField] private AudioClip bgmMedievalLoop;
@@ -40,65 +39,65 @@ public class AudioManager : MonoBehaviour
     // Play Background Music
     public void PlayBGM()
     {
-        if (bgmSource && bgmMedievalLoop)
+        if (audioSource && bgmMedievalLoop)
         {
-            bgmSource.clip = bgmMedievalLoop;
-            bgmSource.loop = true;
-            bgmSource.Play();
+            audioSource.clip = bgmMedievalLoop;
+            audioSource.loop = true;
+            audioSource.Play();
         }
     }
 
     // Drag-drop sound
-    public void PlayDragDrop() => PlaySFX(sfxDragDrop);
+    public void PlayDragDrop() => PlaySound(sfxDragDrop);
 
     // Task-based SFX
     public void PlayPotionBrewTask()
     {
-        PlaySFX(sfxPotionBrew);
-        PlaySFX(sfxFireRoar, 0.2f);
+        PlaySound(sfxPotionBrew);
+        PlaySound(sfxFireRoar, 0.2f);
     }
 
     public void PlayOilTask()
     {
-        PlaySFX(sfxBoiling);
-        PlaySFX(sfxFireRoar, 0.2f);
+        PlaySound(sfxBoiling);
+        PlaySound(sfxFireRoar, 0.2f);
     }
 
     public void PlayTomeTask()
     {
-        PlaySFX(sfxPages);
-        PlaySFX(sfxMagicAura, 0.2f);
+        PlaySound(sfxPages);
+        PlaySound(sfxMagicAura, 0.2f);
     }
 
-    // Time-based ambience
-    public void PlayMorningAmbience()
-    {
-        PlayAmbience(sfxMorningBirds);
-    }
-
-    public void PlayNightAmbience()
-    {
-        PlayAmbience(sfxNight);
-    }
 
     // Events
-    public void PlayKingArrival() => PlaySFX(sfxKingArrival);
-    public void PlayWarHorn() => PlaySFX(sfxWarHorn);
-    public void PlayKingAngry() => PlaySFX(sfxKingAngry);
+    public void PlayKingArrival() => PlaySound(sfxKingArrival);
+    public void PlayWarHorn() => PlaySound(sfxWarHorn);
+    public void PlayKingAngry() => PlaySound(sfxKingAngry);
 
-    private void PlaySFX(AudioClip clip, float volume = 1f)
+    public void PlaySound(AudioClip clip, float delay = 0f)
     {
-        if (clip != null)
-            sfxSource.PlayOneShot(clip, volume);
+        if (clip == null || audioSource == null) return;
+
+        if (delay <= 0f)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+        else
+        {
+            StartCoroutine(PlayDelayed(clip, delay));
+        }
     }
 
-    private void PlayAmbience(AudioClip clip)
+    private System.Collections.IEnumerator PlayDelayed(AudioClip clip, float delay)
     {
-        if (clip != null && ambienceSource != null)
-        {
-            ambienceSource.clip = clip;
-            ambienceSource.loop = true;
-            ambienceSource.Play();
-        }
+        yield return new WaitForSeconds(delay);
+        audioSource.PlayOneShot(clip);
+    }
+
+
+    public void SetVolume(float volume)
+    {
+        audioSource.volume = volume;
     }
 }

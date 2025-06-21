@@ -137,6 +137,7 @@ public class GameController : MonoBehaviour
 
     private void EndLevel()
     {
+        Debug.Log("Daycount : " + dayCount);
         foreach (var slot in slots)
         {
             slot.PenalizeUnassigned();
@@ -153,7 +154,11 @@ public class GameController : MonoBehaviour
         nextDayButton.gameObject.SetActive(true);
 
         if (dayCount == 5)
+        {
             ProgressionManager.Instance.ApplyWeeklyProgression();
+            dayCount = 0;
+        }
+            
     }
 
     private void RestartLevel()
