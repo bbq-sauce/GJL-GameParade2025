@@ -52,7 +52,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
 
     private IEnumerator RunTask(CharacterData data)
     {
-        float duration = data.timeToDoTask;
+        float duration = data.currTimeToDoTask;
         float elapsed = 0f;
 
         assignedCharacter.ShowProgressBar(true);
@@ -70,7 +70,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
         assignedCharacter.LockDragging(false);
 
         float roll = Random.Range(0f, 100f);
-        bool success = roll <= data.successRate;
+        bool success = roll <= data.currSuccessRate;
         int points = success ? data.pointsPerSuccess : data.pointsPerFailure;
         GameController.Instance.AddScore(points);
 

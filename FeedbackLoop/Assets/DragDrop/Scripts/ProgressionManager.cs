@@ -32,4 +32,10 @@ public class ProgressionManager : MonoBehaviour
         warlockStats.ApplyWeeklyModifiers();
         clericStats.ApplyWeeklyModifiers();
     }
+
+    public void ResetWeeklyProgression()
+    {
+        warlockStats.ResetWeeklyProgressionOnNewGame();
+        clericStats.ResetWeeklyProgressionOnNewGame();
+    }
 }

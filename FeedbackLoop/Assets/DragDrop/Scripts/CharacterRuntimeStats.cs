@@ -12,8 +12,8 @@ public class CharacterRuntimeStats
     public int TasksDone = 0;
     public int TasksFailed = 0;
 
-    public float CurrentTimeToDoTask => baseData.timeToDoTask + BonusTime;
-    public float CurrentSuccessRate => baseData.successRate + Luck;
+    public float CurrentTimeToDoTask => baseData.currTimeToDoTask + BonusTime;
+    public float CurrentSuccessRate => baseData.currSuccessRate + Luck;
 
     public void RecordSuccess()
     {
@@ -34,16 +34,24 @@ public class CharacterRuntimeStats
         else if (baseData.characterName == "Cleric")
             BonusTime += TasksFailed / 2f;
 
-        baseData.successRate += Luck;
-        baseData.timeToDoTask += BonusTime;
+        baseData.currSuccessRate += Luck;
+        baseData.currTimeToDoTask += BonusTime;
         PrintCharacterStats();
         ResetWeekData();
     }
 
     public void ResetWeekData()
     {
+        Luck = 0f;
+        BonusTime = 0f;
         TasksDone = 0;
         TasksFailed = 0;
+    }
+
+    public void ResetWeeklyProgressionOnNewGame()
+    {
+        baseData.currSuccessRate =baseData.baseLuck;
+        baseData.currTimeToDoTask = baseData.baseTime;
     }
 
     public void PrintCharacterStats()

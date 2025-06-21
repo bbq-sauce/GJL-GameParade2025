@@ -101,6 +101,8 @@ public class UIController : MonoBehaviour
 
     void StartNewGame()
     {
+        ProgressionManager.Instance.ApplyWeeklyProgression();
+        ProgressionManager.Instance.ResetWeeklyProgression();
         currentWeek = 1;
         currentDay = 1;
         UpdateGameInfoText();

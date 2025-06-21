@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Cleric
   m_EditorClassIdentifier: 
   characterName: Cleric
-  timeToDoTask: 40
-  successRate: 75
+  baseTime: 40
+  baseLuck: 75
+  currTimeToDoTask: 0
+  currSuccessRate: 0
   pointsPerSuccess: 10
   pointsPerFailure: -5

@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Warlock
   m_EditorClassIdentifier: 
   characterName: Warlock
-  timeToDoTask: 20
-  successRate: 65
+  baseTime: 20
+  baseLuck: 65
+  currTimeToDoTask: 0
+  currSuccessRate: 0
   pointsPerSuccess: 7
   pointsPerFailure: -15

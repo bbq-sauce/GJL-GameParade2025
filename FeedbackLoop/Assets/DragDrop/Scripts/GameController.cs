@@ -137,7 +137,7 @@ public class GameController : MonoBehaviour
 
     private void EndLevel()
     {
-        Debug.Log("Daycount : " + dayCount);
+        Debug.Log("Daycount : \n" + dayCount);
         foreach (var slot in slots)
         {
             slot.PenalizeUnassigned();
@@ -147,7 +147,7 @@ public class GameController : MonoBehaviour
 
         endScreenText.text = dayCount >= 5
             ? $"Final Week Score: {totalScore}\n{(totalScore >= 50 ? "Great job!" : "Try again!")}"
-            : $"Day {dayCount} Score: {currentScore}";
+            : $"Day {dayCount} Score:\n {currentScore}";
 
         UIController.Instance.AdvanceDay(dayCount + 1);
         endScreen.SetActive(true);

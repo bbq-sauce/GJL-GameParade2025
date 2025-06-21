@@ -4,8 +4,10 @@ using UnityEngine;
 public class CharacterData : ScriptableObject
 {
     public string characterName;
-    public float timeToDoTask; // in seconds
-    public float successRate; // 0-100
+    public float baseTime;
+    public float baseLuck;
+    public float currTimeToDoTask; // in seconds
+    public float currSuccessRate; // 0-100
     public int pointsPerSuccess;
     public int pointsPerFailure;
 }
