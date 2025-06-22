@@ -103,7 +103,7 @@ public class UIController : MonoBehaviour
     void StartCinematicComplete()
     {
         cinematicsPanel.SetActive(true);
-        StartNewGame();
+        //StartNewGame();
     }
 
     public void StartNewGame()

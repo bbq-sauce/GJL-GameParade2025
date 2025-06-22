@@ -45,9 +45,13 @@ public class PanelSequenceController : MonoBehaviour
 
     void ShowNextPanel()
     {
+        Time.timeScale = 1;
         if (currentPanelIndex >= panelDataList.Length)
         {
             nextButton.gameObject.SetActive(false);
+
+            // Delay and then start the game
+            StartCoroutine(EndCinematicAndStartGame());
             return;
         }
 
@@ -69,4 +73,12 @@ public class PanelSequenceController : MonoBehaviour
 
         currentPanelIndex++;
     }
+
+    private IEnumerator EndCinematicAndStartGame()
+    {
+        yield return new WaitForSeconds(1f); // Optional small delay
+        this.gameObject.SetActive(false);
+        UIController.Instance.StartNewGame();
+    }
+
 }
