@@ -53,8 +53,9 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     public void SetProgress(float value)
     {
         if (taskProgressBar != null)
-            taskProgressBar.fillAmount = value;
+            taskProgressBar.fillAmount = Mathf.Clamp01(value);
     }
+
 
     public void ShowProgressBar(bool show)
     {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine.EventSystems;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class TaskSlot : MonoBehaviour, IDropHandler
 {
@@ -10,6 +11,14 @@ public class TaskSlot : MonoBehaviour, IDropHandler
     private bool taskStarted = false;
     private bool isActive =true;
     public bool IsRunning => taskCoroutine != null;
+    [SerializeField] private Image targetImage;
+
+    public void SetAlpha(float alpha)
+    {
+        Color color = targetImage.color;
+        color.a = Mathf.Clamp01(alpha); // Ensure value is between 0 and 1
+        targetImage.color = color;
+    }
 
     public void SetActiveState(bool active)
     {
@@ -18,7 +27,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
         if (canvasGroup != null)
         {
             canvasGroup.alpha = active ? 1f : 0.4f;           // make it look faded when inactive
-            canvasGroup.blocksRaycasts = active;              // only interactable if active
+            this.gameObject.SetActive(active);         // only interactable if active
         }
     }
 
@@ -92,6 +101,7 @@ public class TaskSlot : MonoBehaviour, IDropHandler
         }
 
 
+        SetAlpha(0.5f);
         assignedCharacter.LockDragging(false);
         taskCoroutine = null;
         taskStarted = false;

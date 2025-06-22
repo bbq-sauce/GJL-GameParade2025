@@ -29,7 +29,12 @@ public class GameController : MonoBehaviour
     public GameObject endScreen;
     public TextMeshProUGUI endScreenText;
     public Button nextDayButton;
+    public Button tryAgainButton;
 
+    [SerializeField] private Sprite GameoverImage;
+    [SerializeField] private Sprite GameWonImage;
+    [SerializeField] private Image EndScreenImage;
+    [SerializeField] private Sprite EndScreenSprite;
 
     [Header("Character References")]
     public DragAndDrop warlock;
@@ -47,6 +52,7 @@ public class GameController : MonoBehaviour
         if (Instance == null) Instance = this;
 
         nextDayButton.onClick.AddListener(ShowKingReaction);
+        tryAgainButton.onClick.AddListener(RestartGame);
     }
 
     private void Start()
@@ -159,13 +165,32 @@ public class GameController : MonoBehaviour
         UIController.Instance.AdvanceDay(dayCount + 1);
         endScreen.SetActive(true);
         nextDayButton.gameObject.SetActive(true);
-
+        tryAgainButton.gameObject.SetActive(false);  
+        EndScreenImage.sprite =EndScreenSprite;
         if (dayCount == 5)
         {
+            ShowGameResult();   
             ProgressionManager.Instance.ApplyWeeklyProgression();
             dayCount = 0;
         }
             
+    }
+
+    private void ShowGameResult()
+    {
+        if (totalScore < 50)
+        {
+            nextDayButton.gameObject.SetActive(false);
+            tryAgainButton.gameObject.SetActive(true);
+            EndScreenImage.sprite = GameoverImage;
+        }
+        else
+        {
+            nextDayButton.gameObject.SetActive(true);
+            tryAgainButton.gameObject.SetActive(false);
+            EndScreenImage.sprite = GameWonImage;
+        }
+
     }
 
 
@@ -213,5 +238,8 @@ public class GameController : MonoBehaviour
         Debug.Log($"[Warlock Stats] Success Rate: {ProgressionManager.Instance.warlockStats.CurrentSuccessRate} | Task Time: {ProgressionManager.Instance.warlockStats.CurrentTimeToDoTask}");
         Debug.Log($"[Cleric Stats] Success Rate: {ProgressionManager.Instance.clericStats.CurrentSuccessRate} | Task Time: {ProgressionManager.Instance.clericStats.CurrentTimeToDoTask}");
     }
-
+    private void RestartGame()
+    {
+        UIController.Instance.StartNewGame();
+    }
 }
